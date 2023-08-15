@@ -1,0 +1,43 @@
+This is a short installation manual for the Barnacle package. For more
+details, we refer to the full manual (in PDF format).
+
+
+Prerequisites
+=============
+The Barnacle package is written in Python and works with Python 2.4
+(or newer). The only non-standard Python packages required by Barnacle
+are numpy and Biopython.
+
+Barnacle runs on any platform where Python and numpy can be
+installed. It has been successfully tested on common Linux, Unix and
+Windows platforms (including Debian Linux, Ubuntu Linux, Mac OS X and
+Cygwin for Windows).
+
+
+Mocapy is included as a sub-package
+===================================
+Note that the Barnacle package includes minimal version of Mocapy
+0.726 \cite{Mocapy} as a sub-package.
+
+
+Installation procedure
+======================
+Barnacle makes use of the standard tool Distutils for installation. To
+install the package, you must first unpack it using the command:
+
+  $ tar -xzf Barnacle-0.2.tar.gz
+
+Once the package has been unpacked, the install script setup.py is
+located in the extracted directory. The package can now be installed
+using the command:
+
+  $ python setup.py install
+
+This will install the package in the standard path for Python
+package. If you want to install the Barnacle in a non-standard
+location, it can be done using the command:
+
+  $ python setup.py install --install-lib MYPATH
+
+See the help text for setup.py for further options on alternative
+installation paths.

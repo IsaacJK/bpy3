@@ -1,0 +1,45 @@
+Version 0.21
+============
+
+The Barnacle package was update to be compatible with Bio.PDB version
+1.53. This version of Bio.PDB introduces support for the 'element'
+column in PDB files, but lacks backward compatibility with older
+version of Bio.PDB. These changes implies that
+
+ - if the Barnacle package is used with Bio.PDB version 1.53 or newer,
+   the 'element' column of the PDB files will be written,
+
+ - however Barnacle is still compatible with older version of Bio.PDB.
+
+The following implementation specific changes has been made
+
+ - The function sAtom has been moved from geometric_conversion to a
+   separate module called simple_atom. Two versions of sAtom has been
+   implemented, one compatible with Bio.PDB pre 1.53 and compatible
+   with Bio.PDB post 1.53. Which function to use is determined by the
+   existence of the argument 'element' to the constructor of the Atom
+   class in Bio.PDB.
+
+ - Optional arguments for not placing atoms in the sugar ring and in
+   the base has been introduced to the function convert_from_dihedrals
+   in the geometric_conversion module. Note that the introduction of
+   these arguments implied changes in the order in which the atoms are
+   constructed. This also changes the order of the atoms in a
+   resulting PDB file.
+
+ - Unused optional arguments has been removed from the function
+   convert_from_dihedrals in the geometric_conversion module.
+
+
+Version 0.20
+=============
+
+The first publicly available version of the Barnacle package.
+
+
+Version 0.10
+=============
+
+The initial unpublished version of the Barnacle package.
+
+ - Features PDB file format version 3

@@ -1,0 +1,69 @@
+#  Barnacle: A probabilistic model of RNA conformational space
+#
+#  Copyright (C) 2008 Jes Frellsen, Ida Moltke and Martin Thiim 
+#
+#  Barnacle is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Barnacle is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Barnacle.  If not, see <http://www.gnu.org/licenses/>.
+
+from .Mocapy import DiscreteNode, VMNode, DBN
+from . import model_parameters as param
+
+# Set constant values
+num_angles = 7
+h_size = 20
+
+angle_id_pos = 0
+hd_pos = 1
+angle_pos = 2
+num_nodes = 3
+
+
+def make_model():
+    """
+    Method for constructing the model
+    """
+
+    ## Specification of the nodes in the DBN
+
+    # Angle identifier - Slice 0 and remaining slices
+    angleId0 = DiscreteNode(node_size=num_angles, name='angleId0', user_cpd=param.angleId0_cpd)
+    angleId1 = DiscreteNode(node_size=num_angles, name='angleId1', user_cpd=param.angleId1_cpd)
+
+    # Hidden node - Slice 0 and remaining slices
+    hd0 = DiscreteNode(node_size=h_size, name='hd0', user_cpd=param.hd0_cpd)
+    hd1 = DiscreteNode(node_size=h_size, name='hd1', user_cpd=param.hd1_cpd)
+
+    # Angle node
+    angle = VMNode(node_size=h_size, name='angle', user_mus=param.angle_mus, user_kappas=param.angle_kappas)
+
+    # Nodes in the first slice
+    start_nodes = [angleId0, hd0, angle]
+
+    # Nodes in the remaining slices
+    end_nodes = [angleId1, hd1, angle]
+
+
+    ## Construct the DBN
+    dbn = DBN(start_nodes, end_nodes)
+
+    # Connections internally in the slices
+    dbn.add_intra('angleId0', 'hd0')
+    dbn.add_intra('hd0','angle')
+
+    # Connections between consecutive slices
+    dbn.add_inter('hd0','hd1')
+    dbn.add_inter('angleId0','angleId1')
+
+    dbn.construct()
+
+    return dbn

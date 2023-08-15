@@ -1,0 +1,98 @@
+#  Barnacle: A probabilistic model of RNA conformational space
+#
+#  Copyright (C) 2008 Jes Frellsen, Ida Moltke and Martin Thiim 
+#
+#  Barnacle is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Barnacle is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Barnacle.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+This is an example script for make samples using Barnacle.
+
+"""
+
+from optparse import OptionParser
+from Barnacle import Barnacle, BarnacleException
+from random import randint
+
+
+description = """This is an example script for the Barnacle python package. It can be
+used for sampling a number of RNA structures that are compatible with
+a given nucleotide sequence and that are RNA like on a local length
+scale. The local conformational space of these structures are modeled
+by the probabilistic model Barnacle. No energy terms are used in the
+sampling.
+"""
+
+# Setup the parser of the options
+parser = OptionParser(usage="usage: %prog [options]", description=description)
+parser.add_option("-s", dest="SEQ", type="string", help="nucleotide sequence [default '%default']", default="GGGCGCAAGCCU")
+parser.add_option("-n", dest="N", type="int", help="number of samples [default '%default']", default=10)
+parser.add_option("-l", dest="LEN", type="int", default=1,
+                  help="number of nucleotides to be resampled for each sample, where 0 means all nucleotides [default '%default']")
+parser.add_option("-o", dest="PREFIX", type="string", help="prefix for pdb file names [default '%default']", default="out")
+(options, args) = parser.parse_args()
+
+# Check the options
+if not len(options.SEQ) > 0:
+    parser.error("SEQ must contain at least one nucleotide.")
+
+if not 0 <= options.LEN <= len(options.SEQ):
+    parser.error("LEN must between 0 and the length of the nucleotide sequence.")
+
+if not 0 <= options.N:
+    parser.error("N must be positive")
+
+if not options.N  <= 10000:
+    parser.error("Not more than 10000 samples are allowed.")
+
+# Set default options for LEN
+if options.LEN == 0:
+    options.LEN = len(options.SEQ)
+
+
+# Try to make a Barnacle object
+try:
+    model = Barnacle(options.SEQ)
+except BarnacleException, e:
+    parser.error(str(e))
+
+# Sample an initial structure
+model.sample()
+
+# The sampling loop
+print "Starting sampling:"
+
+for i in xrange(options.N):
+    # Find random position to resample
+    start = randint(0, len(options.SEQ)-options.LEN)
+    end = start + options.LEN
+
+    # Sample a new structure
+    model.sample(start, end)
+
+    # Calculate the log likelihood of the structure
+    ll = model.get_log_likelihood()
+
+    # Print the filename and likelihood 
+    filename = options.PREFIX + ("%05d.pdb" % i)
+    print "%s: ll=%f" % (filename, ll)
+
+    # Save the pdb file
+    try:
+        model.save_structure(filename)
+    except IOError, e:
+        parser.error(str(e))
+
+print "DONE"
+    
+    

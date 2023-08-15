@@ -1,0 +1,43 @@
+#  Barnacle: A probabilistic model of RNA conformational space
+#
+#  Copyright (C) 2008 Jes Frellsen, Ida Moltke and Martin Thiim 
+#
+#  Barnacle is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Barnacle is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Barnacle.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+A probabilistic model of RNA conformational space.
+
+This package contains a reference implementation of Barnacle: a
+probabilistic model of RNA conformational space. The model is wrapped
+into the main class Barnacle. This class can be used for sampling RNA
+structures that are RNA like on a local length scale.
+
+
+Relations to other packages
+---------------------------
+The only non-standard Python packages required by Barnacle are numpy
+and Biopython.
+
+Note that the Barnacle package includes minimal version of Mocapy
+0.726 as a sub-package.
+
+Biopython: http://biopython.org
+Mocapy: http://sourceforge.net/projects/mocapy/
+"""
+
+from .Barnacle import Barnacle
+from .BarnacleExceptions import BarnacleException, BarnacleBoundException, BarnacleResampleException, BarnacleStateException
+
+__all__ = ["Barnacle"]
+
